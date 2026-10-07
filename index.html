@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fonrek Studio – Softvér pre autoservisy</title>
+    <meta
+      name="description"
+      content="Fonrek Studio je offline desktopová aplikácia pre autoservisy. Evidencia zákazníkov, vozidiel, zákaziek a servisných intervalov. Doživotná licencia, žiadne mesačné poplatky."
+    />
+    <meta name="theme-color" content="#0c0f14" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23f15a24'/%3E%3Cpath d='M9 17.5h14M16 8v13' stroke='%23110b08' stroke-width='2.4' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='17.5' r='3.2' fill='none' stroke='%23110b08' stroke-width='2.2'/%3E%3C/svg%3E"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#obsah">Preskočiť na obsah</a>
+
+    <header class="site-header">
+      <div class="container header-bar">
+        <a class="logo" href="#">
+          <img src="img/logo.png" alt="Fonrek Studio" />
+        </a>
+
+        <input class="menu-toggle" type="checkbox" id="menu-toggle" />
+        <label class="menu-btn" for="menu-toggle">
+          <span class="sr-only">Otvoriť menu</span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+
+        <nav class="nav" aria-label="Hlavná navigácia">
+          <ul>
+            <li><a href="#prinosy">Prínosy</a></li>
+            <li><a href="#ukazka">Ukážka</a></li>
+            <li><a href="#funkcie">Funkcie</a></li>
+            <li><a href="#licencia">Licencia</a></li>
+            <li><a href="#start">Štart</a></li>
+            <li><a href="#cennik">Cenník</a></li>
+          </ul>
+          <a class="btn btn-small" href="#cennik">Kúpiť licenciu</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="obsah">
+      <section class="hero" id="uvod" aria-labelledby="hero-title">
+        <div class="hero-media" aria-hidden="true">
+          <video autoplay muted loop playsinline preload="auto">
+            <source src="img/dielna-video.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div class="hero-fx" aria-hidden="true">
+          <span class="hero-pulse"></span>
+          <span class="hero-beam hero-beam-a"></span>
+          <span class="hero-beam hero-beam-b"></span>
+          <span class="spark"></span>
+          <span class="spark"></span>
+          <span class="spark"></span>
+          <span class="spark"></span>
+          <span class="spark"></span>
+          <span class="spark"></span>
+        </div>
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Desktopová aplikácia pre autoservis</p>
+            <h1 id="hero-title">
+              Fonrek Studio – Softvér pre kompletnú správu autoservisu
+              <span>bez mesačných poplatkov</span>
+            </h1>
+            <p class="lede">
+              Zjednodušte si evidenciu zákazníkov, vozidiel, opravárenských zákaziek a
+              servisných intervalov v prehľadnom a rýchlom softvéri.
+            </p>
+            <div class="hero-actions">
+              <a class="btn" href="#cennik">Získať doživotnú licenciu</a>
+              <a class="btn btn-ghost" href="#start">Ako začať</a>
+            </div>
+            <ul class="pills">
+              <li>Doživotná licencia</li>
+              <li>100 % Offline</li>
+              <li>Bez odberov</li>
+            </ul>
+          </div>
+
+          <figure class="hero-shot">
+            <img
+              src="img/prijem vozidla.png"
+              alt="Obrazovka Príjem vozidla v aplikácii Fonrek Studio"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section class="section" id="prinosy" aria-labelledby="benefits-title">
+        <div class="container">
+          <header class="section-head">
+            <p class="eyebrow">01 — Pre servis aj mechanika</p>
+            <h2 id="benefits-title">Ako Fonrek Studio pomáha servisu a mechanikom</h2>
+            <p class="lede">
+              Papier, zošit a rozhádzané tabuľky nahradí jedno okno. História auta,
+              zákazka aj termín sú na dosah podľa evidenčného čísla.
+            </p>
+          </header>
+
+          <div class="card-grid card-grid-4">
+            <article class="card">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32">
+                  <circle cx="16" cy="17" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8" />
+                  <path d="M16 12.5V17l3.2 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                  <path d="M13 6.5h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+              </span>
+              <h3>Ušetrite čas na administratíve</h3>
+              <p>Už žiadne zápisníky ani neprehľadné tabuľky. Všetko nájdete na 2 kliknutia podľa EČV.</p>
+            </article>
+
+            <article class="card">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32">
+                  <path d="M6 20.5h20l-1.6-5.2a2 2 0 0 0-1.9-1.4H9.5a2 2 0 0 0-1.9 1.4L6 20.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                  <path d="M8.5 20.5v2.2M23.5 20.5v2.2M10 16.2l1.4-3.4h9.2l1.4 3.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                  <circle cx="11" cy="23.2" r="1.5" fill="currentColor" />
+                  <circle cx="21" cy="23.2" r="1.5" fill="currentColor" />
+                </svg>
+              </span>
+              <h3>Majte prehľad o každom aute</h3>
+              <p>Kompletná história opráv a servisný denník pre každé vozidlo na jednom mieste.</p>
+            </article>
+
+            <article class="card">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32">
+                  <path d="M8 13.5a8 8 0 0 1 16 0c0 6 2 7.2 2 7.2H6s2-1.2 2-7.2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                  <path d="M13.2 23.2a2.8 2.8 0 0 0 5.6 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+              </span>
+              <h3>Nezmeškajte servisné intervaly</h3>
+              <p>Automatické upozornenia na kontrolu STK/EK, výmenu oleja, rozvodov a filtrov.</p>
+            </article>
+
+            <article class="card">
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 32 32">
+                  <path d="M10 7.5h9.2L23.5 12v12.5h-13.5V7.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                  <path d="M19 7.8V12h4.2M13 16.5h6.5M13 20h4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+              </span>
+              <h3>Profiservis pre zákazníka</h3>
+              <p>Generovanie a tlač profesionálnych servisných protokolov a zákazkových listov v PDF na 1 klik.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="ukazka" aria-labelledby="showcase-title">
+        <div class="container">
+          <header class="section-head">
+            <p class="eyebrow">02 — Prostredie aplikácie</p>
+            <h2 id="showcase-title">Ukážka prostredia aplikácie</h2>
+            <p class="lede">
+              Reálne obrazovky z Fonrek Studio. Príjem, kalendár aj zákazníci sú v jednom
+              okne na vašom počítači.
+            </p>
+          </header>
+
+          <div class="showcase">
+            <figure>
+              <img
+                src="img/prijem vozidla.png"
+                alt="Obrazovka príjmu vozidla s vyhľadávaním v databáze"
+              />
+              <figcaption>Rýchly príjem vozidla a vyhľadávanie v databáze</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="img/kalendar a objednavky.png"
+                alt="Obrazovka kalendára a objednávok v aplikácii Fonrek Studio"
+              />
+              <figcaption>Prehľadný kalendár a plánovanie objednávok</figcaption>
+            </figure>
+            <figure>
+              <img
+                src="img/zakaznici.png"
+                alt="Obrazovka správy zákazníkov v aplikácii Fonrek Studio"
+              />
+              <figcaption>Kompletná správa zákazníkov a história</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="funkcie" aria-labelledby="features-title">
+        <div class="container">
+          <header class="section-head">
+            <p class="eyebrow">03 — Čo je v balíku</p>
+            <h2 id="features-title">Čo všetko aplikácia obsahuje</h2>
+            <p class="lede">
+              Evidencia, ktorú autoservis naozaj používa. Od prvej návštevy zákazníka
+              po vytlačený protokol.
+            </p>
+          </header>
+
+          <div class="card-grid card-grid-3">
+            <article class="feature">
+              <span class="feature-index">01</span>
+              <h3>Správa zákazníkov &amp; vozidiel</h3>
+              <p>Databáza kontaktov, EČV, VIN, značiek a modelov.</p>
+            </article>
+            <article class="feature">
+              <span class="feature-index">02</span>
+              <h3>Servisné zákazky</h3>
+              <p>Evidencia stavu opráv, použitého materiálu, práce a cien.</p>
+            </article>
+            <article class="feature">
+              <span class="feature-index">03</span>
+              <h3>Servisné intervaly</h3>
+              <p>Sledovanie STK/EK a plánovaných údržieb.</p>
+            </article>
+            <article class="feature">
+              <span class="feature-index">04</span>
+              <h3>Generovanie PDF dokumentov</h3>
+              <p>Servisné protokoly, zákazkové listy a potvrdenia pre klienta.</p>
+            </article>
+            <article class="feature">
+              <span class="feature-index">05</span>
+              <h3>Rýchle vyhľadávanie</h3>
+              <p>Okamžité filtrovanie podľa EČV alebo mena klienta.</p>
+            </article>
+            <article class="feature">
+              <span class="feature-index">06</span>
+              <h3>Zmeny &amp; export dát</h3>
+              <p>Zálohovanie a export údajov.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="licencia" aria-labelledby="license-title">
+        <div class="container">
+          <header class="section-head">
+            <p class="eyebrow">04 — Model, ktorý dáva zmysel dielni</p>
+            <h2 id="license-title">Prečo online bezpečnosť a offline licencia?</h2>
+            <p class="lede">
+              Údaje o zákazníkoch patria do vášho počítača. Licencia tiež — kúpite ju raz
+              a softvér vám zostane.
+            </p>
+          </header>
+
+          <div class="license-panel">
+            <article class="license-card">
+              <p class="license-kicker">Model licencie</p>
+              <h3>Doživotná licencia</h3>
+              <p>Zaplatíte iba raz. Žiadne mesačné poplatky ani skryté odbery.</p>
+              <ul>
+                <li>Jedna platba, plná verzia</li>
+                <li>Bez predplatného a bez odberov</li>
+                <li>Aktualizácie a podpora v cene</li>
+              </ul>
+            </article>
+            <article class="license-card license-card-accent">
+              <p class="license-kicker">Vaše dáta</p>
+              <h3>100 % offline a v bezpečí</h3>
+              <p>
+                Aplikácia beží lokálne na vašom počítači. Vaše dáta a údaje o zákazníkoch
+                nikam neodchádzajú na cudzie servery. Funguje aj bez pripojenia k internetu.
+              </p>
+              <ul>
+                <li>Lokálna databáza na vašom PC</li>
+                <li>Žiadny cudzí cloud</li>
+                <li>Práca aj bez internetu</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="start" aria-labelledby="start-title">
+        <div class="container">
+          <header class="section-head">
+            <p class="eyebrow">05 — Štyri kroky</p>
+            <h2 id="start-title">Ako softvér spustiť a používať</h2>
+            <p class="lede">
+              Žiadny server, žiadna registrácia účtu. Inštalácia na Windows a môžete evidovať.
+            </p>
+          </header>
+
+          <ol class="steps">
+            <li>
+              <h3>Stiahnite inštaláciu</h3>
+              <p>Stiahnite si inštalačný balíček alebo <code>.exe</code> súbor aplikácie Fonrek Studio.</p>
+            </li>
+            <li>
+              <h3>Spustite na Windows</h3>
+              <p>
+                Spustite súbor na Vašom počítači (Windows) – inštalácia je rýchla a nevyžaduje
+                žiadne zložité nastavovanie databáz.
+              </p>
+            </li>
+            <li>
+              <h3>Zadajte licenčný kľúč</h3>
+              <p>Zadajte svoj licenčný kľúč pri prvom spustení.</p>
+            </li>
+            <li>
+              <h3>Evidujte prvú zákazku</h3>
+              <p>Začnite okamžite evidovať prvých zákazníkov a zákazky!</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section" id="cennik" aria-labelledby="pricing-title">
+        <div class="container pricing-wrap">
+          <header class="section-head">
+            <p class="eyebrow">06 — Jedna cena</p>
+            <h2 id="pricing-title">Cenník</h2>
+            <p class="lede">Žiadne balíky, žiadne mesačné úrovne. Jedna doživotná licencia.</p>
+          </header>
+
+          <article class="price-card">
+            <p class="price-flag">Jednorazovo</p>
+            <h3>Doživotná licencia Fonrek Studio</h3>
+            <p class="price">
+              <span class="price-value">49 €</span>
+              <span class="price-note">zaplatíte raz</span>
+            </p>
+            <ul class="price-list">
+              <li>Plná verzia aplikácie</li>
+              <li>Neobmedzený počet zákazníkov a EČV</li>
+              <li>Generovanie PDF</li>
+              <li>Podpora a aktualizácie v cene</li>
+              <li>Doživotný prístup bez mesačných poplatkov</li>
+            </ul>
+            <a class="btn btn-block" href="mailto:podpora@fonrek.studio?subject=Licencia%20Fonrek%20Studio">
+              Kúpiť licenciu
+            </a>
+            <p class="price-foot">Windows · lokálna inštalácia · fakturácia na vyžiadanie</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <a class="logo" href="#uvod">
+            <span class="logo-mark" aria-hidden="true">
+              <svg viewBox="0 0 32 32" width="22" height="22">
+                <path d="M9 18h14M16 8.5V18" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" />
+                <circle cx="16" cy="18" r="3.1" fill="none" stroke="currentColor" stroke-width="2.2" />
+              </svg>
+            </span>
+            <span>Fonrek Studio</span>
+          </a>
+          <p>Evidencia autoservisu, ktorá zostáva vo vašom počítači.</p>
+        </div>
+
+        <div>
+          <h2>Podpora</h2>
+          <ul>
+            <li><a href="mailto:podpora@fonrek.studio">podpora@fonrek.studio</a></li>
+            <li><a href="#start">Ako softvér spustiť</a></li>
+            <li><a href="#cennik">Doživotná licencia</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h2>Na stránke</h2>
+          <ul>
+            <li><a href="#prinosy">Prínosy</a></li>
+            <li><a href="#ukazka">Ukážka aplikácie</a></li>
+            <li><a href="#funkcie">Funkcie</a></li>
+            <li><a href="#licencia">Offline a bezpečnosť</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <p>© 2026 Fonrek Studio</p>
+        <p>Desktopová aplikácia pre autoservisy a mechanikov.</p>
+      </div>
+    </footer>
+    <script>
+      const menuToggle = document.querySelector("#menu-toggle");
+      document.querySelectorAll(".nav a").forEach((link) => {
+        link.addEventListener("click", () => {
+          menuToggle.checked = false;
+        });
+      });
+
+      const motionOk = window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
+      const heroVideo = document.querySelector(".hero-media video");
+      if (heroVideo && !motionOk) {
+        heroVideo.removeAttribute("autoplay");
+        heroVideo.pause();
+      }
+      if (motionOk) {
+        document.querySelectorAll(".card, .feature, .showcase figure, .hero-shot").forEach((el) => {
+          el.addEventListener("pointermove", (event) => {
+            const rect = el.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - 0.5;
+            const y = (event.clientY - rect.top) / rect.height - 0.5;
+            el.style.setProperty("--tilt-x", `${(-y * 7).toFixed(2)}deg`);
+            el.style.setProperty("--tilt-y", `${(x * 8).toFixed(2)}deg`);
+          });
+          el.addEventListener("pointerleave", () => {
+            el.style.setProperty("--tilt-x", "0deg");
+            el.style.setProperty("--tilt-y", "0deg");
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
