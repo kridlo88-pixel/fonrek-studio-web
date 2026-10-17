@@ -300,6 +300,11 @@ header .logo img {
   width: 100%;
 }
 
+.download-actions {
+  display: grid;
+  gap: 0.65rem;
+}
+
 .hero {
   position: relative;
   padding: clamp(3.2rem, 7vw, 5.5rem) 0 clamp(3.5rem, 7vw, 5.5rem);
