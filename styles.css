@@ -487,6 +487,36 @@ header .logo img {
   vertical-align: 0.05em;
 }
 
+.platform-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.7rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: 1rem 0 0;
+  padding: 0.45rem 0.85rem 0.45rem 0.45rem;
+  border: 1px solid rgba(251, 102, 3, 0.28);
+  border-radius: 16px;
+  background: rgba(12, 15, 20, 0.55);
+  color: var(--text);
+  font-size: 0.94rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.platform-note span {
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: #ffb56a;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .hero-shot {
   --tilt-x: 0deg;
   --tilt-y: 0deg;
