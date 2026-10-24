@@ -634,6 +634,82 @@ header .logo img {
   filter: brightness(1.1);
 }
 
+.feature-rows {
+  display: grid;
+  gap: 1.15rem;
+}
+
+.feature-row {
+  display: grid;
+  gap: 1.15rem;
+  align-items: center;
+  padding: 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background:
+    radial-gradient(420px 180px at 100% 0%, rgba(0, 180, 240, 0.08), transparent 62%),
+    var(--bg-card);
+}
+
+.feature-row .eyebrow {
+  margin-bottom: 0.4rem;
+}
+
+.feature-row h3 {
+  margin: 0 0 0.55rem;
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.feature-row p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.feature-row figure {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #10141b;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  transition:
+    transform 0.16s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
+  cursor: pointer;
+}
+
+.feature-row img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+.feature-row figcaption {
+  padding: 0.85rem 1rem 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+}
+
+.feature-row figure:hover {
+  border-color: rgba(0, 180, 240, 0.55);
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.42),
+    0 0 32px rgba(0, 180, 240, 0.3);
+}
+
+.feature-row figure:hover img {
+  transform: scale(1.02);
+  filter: brightness(1.06);
+}
+
 .demo-section .section-head {
   margin-inline: auto;
   text-align: center;
@@ -1238,6 +1314,20 @@ header .logo img {
   .showcase {
     grid-template-columns: repeat(3, 1fr);
   }
+
+  .feature-row {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    gap: 1.75rem;
+    padding: 1.35rem 1.35rem 1.35rem 1.7rem;
+  }
+
+  .feature-row:nth-child(even) {
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  }
+
+  .feature-row:nth-child(even) .feature-copy {
+    order: 2;
+  }
 }
 
 @media (max-width: 860px) {
@@ -1334,6 +1424,7 @@ header .logo img {
   .card,
   .feature,
   .showcase figure,
+  .feature-row figure,
   .hero-shot {
     transform: none !important;
   }
