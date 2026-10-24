@@ -710,30 +710,6 @@ header .logo img {
   filter: brightness(1.06);
 }
 
-.demo-section .section-head {
-  margin-inline: auto;
-  text-align: center;
-}
-
-.demo-section .lede {
-  margin-inline: auto;
-}
-
-.demo-video {
-  width: min(100%, 900px);
-  margin-inline: auto;
-}
-
-.demo-video video {
-  display: block;
-  width: 100%;
-  height: auto;
-  border: 1px solid var(--line-strong);
-  border-radius: 18px;
-  background: #10141b;
-  box-shadow: var(--shadow);
-}
-
 .lightbox {
   position: fixed;
   width: min(1080px, calc(100% - 2rem));
