@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fonrek Studio — Garage software you pay for once</title>
+  <meta name="description" content="Desktop software for UK garages. Customers, seasonal tyre storage, and PDF invoices on your own PC. Lifetime licence, offline SQLite, no subscription.">
+  <meta name="theme-color" content="#0A1628">
+  <meta property="og:title" content="Fonrek Studio — Garage software you pay for once">
+  <meta property="og:description" content="Customers, tyre storage, and PDF invoices on the workshop PC. A lifetime licence. No monthly fee. No cloud copy of your books.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_GB">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23E10600'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Arial Black,Arial' font-size='16' fill='white'%3EF%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=Fraunces:ital,opsz,wght@1,9..144,560&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: "#0A1628",
+            deep: "#071018",
+            signal: "#E10600",
+            signaldark: "#B10D16",
+            paper: "#F3EEE4",
+            card: "#FFFCF7",
+            steel: "#3E4C5C",
+            line: "#E5DDD0"
+          },
+          fontFamily: {
+            display: ['"Bricolage Grotesque"', "Arial", "sans-serif"],
+            sans: ["Figtree", "Arial", "sans-serif"],
+            serif: ["Fraunces", "Georgia", "serif"]
+          },
+          boxShadow: {
+            lift: "0 18px 50px rgba(10, 22, 40, 0.12)",
+            mock: "0 30px 70px rgba(0, 0, 0, 0.38)"
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { overflow-x: clip; }
+    ::selection { background: #E10600; color: #fff; }
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 2px solid #E10600;
+      outline-offset: 3px;
+    }
+    .skip {
+      position: absolute;
+      left: 1rem;
+      top: -4rem;
+      z-index: 80;
+      background: #fff;
+      color: #0A1628;
+      padding: 0.6rem 0.9rem;
+      border-radius: 0.375rem;
+    }
+    .skip:focus { top: 0.75rem; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes rock {
+      0%, 100% { transform: rotate(-16deg); }
+      50% { transform: rotate(12deg); }
+    }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+    .gear-spin { animation: spin 16s linear infinite; transform-origin: 50% 50%; }
+    .gear-slow { animation: spin 56s linear infinite; transform-origin: 50% 50%; }
+    .wrench-rock { animation: rock 2.8s ease-in-out infinite; transform-origin: 45% 70%; }
+    .rise { animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+    .rise-d1 { animation-delay: 0.08s; }
+    .rise-d2 { animation-delay: 0.18s; }
+    .rise-d3 { animation-delay: 0.3s; }
+    .rise-d4 { animation-delay: 0.42s; }
+    .floaty { animation: floaty 5.5s ease-in-out infinite; }
+
+    .js .reveal {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .js .reveal.is-in { opacity: 1; transform: none; }
+
+    .feature-card { transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease; }
+    .feature-card:hover { transform: translateY(-6px); box-shadow: 0 18px 50px rgba(10, 22, 40, 0.12); }
+    .feature-card .ico { transition: background 0.3s ease, color 0.3s ease, transform 0.35s ease; }
+    .feature-card:hover .ico { background: #E10600; color: #fff; transform: rotate(-8deg); }
+
+    .bar-fill { width: var(--w); }
+    .js .reveal:not(.is-in) .bar-fill { width: 0; transition: none; }
+    .js .reveal.is-in .bar-fill { width: var(--w); transition: width 1.05s 0.15s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    .burger, .burger::before, .burger::after {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: #fff;
+      position: relative;
+      transition: transform 0.2s ease, top 0.2s ease, background 0.2s ease;
+    }
+    .burger::before, .burger::after { content: ""; position: absolute; left: 0; }
+    .burger::before { top: -6px; }
+    .burger::after { top: 6px; }
+    .burger.is-open { background: transparent; }
+    .burger.is-open::before { top: 0; transform: rotate(45deg); }
+    .burger.is-open::after { top: 0; transform: rotate(-45deg); }
+
+    .sheet { box-shadow: 0 10px 24px rgba(10, 22, 40, 0.08); }
+    @media (max-width: 1023px) {
+      #nav-panel.is-open {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 40;
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        height: 100dvh;
+        width: 100%;
+        margin: 0;
+        padding: 5.25rem 1.25rem 2rem;
+        background: #0A1628;
+      }
+    }
+    .nums { font-variant-numeric: tabular-nums; }
+    #problem, #features, #pricing, #buy { scroll-margin-top: 5.75rem; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .js .reveal { opacity: 1; transform: none; }
+      .bar-fill { width: var(--w) !important; }
+    }
+  </style>
+  <script>document.documentElement.classList.add("js");</script>
+</head>
+<body class="bg-paper font-sans text-ink antialiased">
+  <a class="skip" href="#content">Skip to content</a>
+
+  <svg class="hidden" aria-hidden="true">
+    <symbol id="i-car" viewBox="0 0 24 24">
+      <path d="M3 13.5 5.2 8.2A2 2 0 0 1 7 7h10a2 2 0 0 1 1.8 1.2L21 13.5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+      <path d="M3.5 13.5h17V17a1 1 0 0 1-1 1h-.8a1.6 1.6 0 0 1-3.1 0H8.4a1.6 1.6 0 0 1-3.1 0H4.5a1 1 0 0 1-1-1v-3.5Z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+      <path d="M7 13.5 8 10.5h8l1 3" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-tyre" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.75"/>
+      <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.75"/>
+      <path d="M12 4.5v2.2M12 17.3v2.2M4.5 12h2.2M17.3 12h2.2M6.4 6.4l1.6 1.6M16 16l1.6 1.6M17.6 6.4 16 8M8 16l-1.6 1.6" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24">
+      <path d="M7 3.5h7.2L19 8.2V20a1.2 1.2 0 0 1-1.2 1.2H7A1.2 1.2 0 0 1 5.8 20V4.7A1.2 1.2 0 0 1 7 3.5Z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round"/>
+      <path d="M14 3.6V8h4.4M8.2 12.2h7.6M8.2 16h5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-db" viewBox="0 0 24 24">
+      <ellipse cx="12" cy="6.5" rx="6.5" ry="2.6" fill="none" stroke="currentColor" stroke-width="1.75"/>
+      <path d="M5.5 6.5v5.2c0 1.5 2.9 2.7 6.5 2.7s6.5-1.2 6.5-2.7V6.5" fill="none" stroke="currentColor" stroke-width="1.75"/>
+      <path d="M5.5 11.7v5c0 1.5 2.9 2.7 6.5 2.7s6.5-1.2 6.5-2.7v-5" fill="none" stroke="currentColor" stroke-width="1.75"/>
+    </symbol>
+    <symbol id="i-key" viewBox="0 0 24 24">
+      <circle cx="8" cy="14" r="3.2" fill="none" stroke="currentColor" stroke-width="1.75"/>
+      <path d="M10.6 12.2 19 4.8l1.6 1.6-1.5 1.5 1.7 1.7-1.6 1.6-1.8-1.7-1.2 1.2" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="M5 12.5 9.2 17 19 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24">
+      <path d="M7 7l10 10M17 7 7 17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+    </symbol>
+  </svg>
+
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-t-[3px] border-b-white/10 border-t-signal bg-ink">
+    <div class="mx-auto flex h-16 max-w-[1120px] items-center justify-between px-5">
+      <a href="#top" class="relative z-[60] flex items-center gap-2.5 text-white">
+        <span class="grid h-9 w-9 place-items-center rounded-md bg-signal font-display text-lg font-extrabold leading-none">F</span>
+        <span class="font-display text-[1.05rem] font-bold tracking-tight">Fonrek <span class="font-medium text-white/65">Studio</span></span>
+      </a>
+
+      <nav id="nav-panel" class="max-lg:hidden flex flex-col gap-2 max-lg:fixed max-lg:inset-x-0 max-lg:bottom-0 max-lg:top-[4.2rem] max-lg:z-40 max-lg:border-t max-lg:border-white/10 max-lg:bg-ink max-lg:p-6 max-lg:shadow-2xl lg:static lg:flex-row lg:items-center lg:gap-8 lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none" aria-label="Primary">
+        <a href="#features" class="rounded-md px-2 py-2 text-sm font-semibold text-white/75 hover:text-white">Features</a>
+        <a href="#pricing" class="rounded-md px-2 py-2 text-sm font-semibold text-white/75 hover:text-white">Pricing</a>
+        <a href="#buy" class="mt-2 inline-flex items-center justify-center rounded-md bg-signal px-4 py-2.5 text-sm font-bold text-white hover:bg-signaldark lg:mt-0">Buy now</a>
+      </nav>
+
+      <button id="nav-toggle" type="button" class="relative z-[60] grid h-10 w-10 place-items-center rounded-md text-white lg:hidden" aria-expanded="false" aria-controls="nav-panel" aria-label="Open menu">
+        <span class="burger" id="burger"></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="content">
+    <section id="top" class="relative overflow-hidden bg-ink pt-28 text-white pb-20 md:pt-32 md:pb-24">
+      <div class="pointer-events-none absolute inset-0 opacity-80" aria-hidden="true" style="background-image: linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px); background-size: 52px 52px; mask-image: radial-gradient(ellipse at 70% 40%, #000 20%, transparent 72%);"></div>
+      <div class="pointer-events-none absolute -right-16 top-16 h-[460px] w-[460px] text-white/[0.07]" aria-hidden="true">
+        <svg class="gear-slow h-full w-full" viewBox="0 0 100 100">
+          <g fill="none" stroke="currentColor" stroke-width="2.4">
+            <circle cx="50" cy="50" r="16"/>
+            <circle cx="50" cy="50" r="6"/>
+            <path d="M50 10v14M50 76v14M10 50h14M76 50h14M20 20l10 10M70 70l10 10M80 20 70 30M30 70 20 80" stroke-linecap="round"/>
+          </g>
+        </svg>
+      </div>
+      <div class="pointer-events-none absolute left-1/2 top-24 h-72 w-72 -translate-x-1/2 rounded-full bg-signal/20 blur-3xl" aria-hidden="true"></div>
+
+      <div class="relative mx-auto max-w-[1120px] px-5">
+        <div class="rise flex items-center gap-3">
+          <div class="flex items-center gap-1.5" aria-hidden="true">
+            <svg class="gear-spin h-9 w-9 text-signal" viewBox="0 0 64 64">
+              <g fill="none" stroke="currentColor" stroke-width="2.6">
+                <circle cx="32" cy="32" r="10"/>
+                <circle cx="32" cy="32" r="3.5"/>
+                <path d="M32 8v9M32 47v9M8 32h9M47 32h9M15 15l6.5 6.5M42.5 42.5 49 49M49 15l-6.5 6.5M21.5 42.5 15 49" stroke-linecap="round"/>
+              </g>
+            </svg>
+            <svg class="wrench-rock h-7 w-7 text-white" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M14.7 6.3a4.1 4.1 0 0 0-5.6 5.4L3.2 17.6a1.6 1.6 0 0 0 0 2.2l.9.9a1.6 1.6 0 0 0 2.2 0l6-6a4.1 4.1 0 0 0 5.4-5.6L15.2 11.6 12.4 8.8l2.3-2.5Z"/>
+            </svg>
+          </div>
+          <p class="text-[0.68rem] font-bold uppercase leading-snug tracking-[0.16em] text-white/70 sm:text-[0.72rem] sm:tracking-[0.22em]">
+            <span class="sm:hidden">Workshop system<br>United Kingdom</span>
+            <span class="hidden sm:inline">Workshop system · United Kingdom</span>
+          </p>
+        </div>
+
+        <h1 class="rise rise-d1 mt-6 max-w-[16ch] font-display text-[clamp(2.7rem,6.4vw,4.9rem)] font-extrabold leading-[0.96] tracking-[-0.045em]">
+          The garage software you pay for <em class="font-serif font-medium italic text-signal">once.</em>
+        </h1>
+
+        <div class="mt-10 grid items-center gap-12 lg:grid-cols-12">
+          <div class="rise rise-d2 lg:col-span-5">
+            <p class="max-w-md text-lg leading-relaxed text-white/78">
+              A bespoke desktop app for British garages. Customers, vehicles, seasonal tyre storage, and one-click PDF invoices stay in SQLite on your own PC. Quick at the front desk. Still open when the line is down.
+            </p>
+            <div class="mt-7 flex flex-wrap items-center gap-3">
+              <a href="#buy" class="inline-flex items-center justify-center rounded-md bg-signal px-5 py-3.5 text-base font-bold text-white shadow-[0_10px_24px_rgba(225,6,0,0.28)] hover:bg-signaldark">Get started</a>
+              <a href="#problem" class="inline-flex items-center justify-center rounded-md border border-white/20 px-5 py-3.5 text-base font-semibold text-white hover:border-white/50">See the difference</a>
+            </div>
+            <p class="mt-4 text-sm text-white/55">Lifetime licence · £349 ex VAT · one workshop PC</p>
+            <ul class="mt-8 flex flex-col gap-2.5 text-sm font-semibold text-white/80">
+              <li class="flex items-center gap-2.5"><span class="h-1.5 w-1.5 bg-signal"></span>Your data stays on the garage computer</li>
+              <li class="flex items-center gap-2.5"><span class="h-1.5 w-1.5 bg-signal"></span>Works without an internet connection</li>
+              <li class="flex items-center gap-2.5"><span class="h-1.5 w-1.5 bg-signal"></span>No monthly subscription</li>
+            </ul>
+          </div>
+
+          <div class="rise rise-d3 relative lg:col-span-7">
+            <div class="overflow-hidden rounded-xl border border-white/10 bg-[#0E1C31] shadow-mock" aria-hidden="true">
+              <div class="flex h-11 items-center justify-between bg-[#081220] px-4">
+                <div class="flex items-center gap-2 text-sm font-semibold">
+                  <span class="h-2 w-2 rounded-full bg-signal"></span>
+                  Fonrek Studio
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-300">Offline</span>
+                  <span class="text-xs text-white/35">Tue 27 Oct</span>
+                </div>
+              </div>
+              <div class="flex min-h-[360px]">
+                <aside class="hidden w-[138px] shrink-0 flex-col gap-1 bg-[#101C30] p-3 text-[11px] text-white/65 sm:flex">
+                  <p class="px-2 pb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/35">Workshop</p>
+                  <div class="rounded-md bg-white/10 px-2.5 py-2 font-semibold text-white">Ramp</div>
+                  <div class="px-2.5 py-2">Customers</div>
+                  <div class="px-2.5 py-2">Tyre store</div>
+                  <div class="px-2.5 py-2">Catalogue</div>
+                  <div class="px-2.5 py-2">Invoices</div>
+                  <div class="mt-auto rounded-md border border-white/10 px-2.5 py-2 text-[10px] leading-snug text-white/45">SQLite<br>workshop.db</div>
+                </aside>
+                <div class="flex-1 bg-[#F4F0E7] p-3 text-ink sm:p-4">
+                  <div class="flex items-end justify-between gap-3">
+                    <div>
+                      <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-steel">Today’s ramp</p>
+                      <p class="font-display text-lg font-bold leading-none">3 on the ramp</p>
+                    </div>
+                    <p class="text-[11px] font-semibold text-signal">1 MOT tomorrow</p>
+                  </div>
+                  <div class="mt-3 space-y-2">
+                    <div class="flex items-center justify-between gap-2 rounded-md bg-white px-3 py-2.5 shadow-sm">
+                      <div>
+                        <p class="text-[13px] font-bold">Ford Focus · FG68 KPL</p>
+                        <p class="text-[11px] text-steel">MOT + service · Bay 1 · Hughes</p>
+                      </div>
+                      <span class="shrink-0 rounded bg-signal/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-signal">On ramp</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-2 rounded-md bg-white px-3 py-2.5 shadow-sm">
+                      <div>
+                        <p class="text-[13px] font-bold">VW Golf · LK21 HWD</p>
+                        <p class="text-[11px] text-steel">Front discs · Bay 2 · Clarke</p>
+                      </div>
+                      <span class="shrink-0 rounded bg-amber-100 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-amber-800">Parts</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-2 rounded-md bg-white px-3 py-2.5 shadow-sm">
+                      <div>
+                        <p class="text-[13px] font-bold">Vauxhall Corsa · BN19 SPE</p>
+                        <p class="text-[11px] text-steel">Winter tyres · Rack C3 · Begum</p>
+                      </div>
+                      <span class="shrink-0 rounded bg-ink/5 px-2 py-1 text-[10px] font-bold uppercase tracking-wide text-steel">14:30</span>
+                    </div>
+                  </div>
+                  <div class="floaty mt-3 ml-auto w-fit rounded-lg border border-line bg-card px-3 py-2.5 shadow-lift">
+                    <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-signal">PDF ready</p>
+                    <p class="mt-0.5 text-sm font-bold">INV-1048 · £244.93</p>
+                    <p class="text-[11px] text-steel">Focus · MOT + service</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="mt-3 text-xs text-white/45">Preview with sample workshop data.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="problem" class="py-20 md:py-28">
+      <div class="mx-auto max-w-[1120px] px-5">
+        <div class="reveal max-w-2xl">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-signal">The usual week</p>
+          <h2 class="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-5xl">You are paying twice for the same job.</h2>
+          <p class="mt-4 text-lg leading-relaxed text-steel">Once in lost minutes, hunting a registration through job cards and a wiped whiteboard. Again on the direct debit, for a cloud package that will not open when the broadband drops — and that keeps your customers on someone else’s server.</p>
+        </div>
+
+        <div class="mt-12 grid gap-5 lg:grid-cols-2">
+          <article class="reveal rounded-xl bg-[#E6DCCB] p-6 md:p-8" style="transition-delay: 40ms">
+            <div class="flex items-start justify-between gap-4">
+              <h3 class="font-display text-2xl font-bold">The usual Tuesday</h3>
+              <span class="stamp mt-1 inline-block -rotate-6 border-2 border-signal px-2 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em] text-signal">Paperwork</span>
+            </div>
+            <div class="relative mt-6 h-64 overflow-hidden" aria-hidden="true">
+              <div class="sheet absolute left-1 top-8 w-44 -rotate-6 rounded-sm bg-[#F7F1E4] p-3">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-steel">Job card</p>
+                <div class="mt-3 h-1.5 w-28 bg-ink/10"></div>
+                <div class="mt-2 h-1.5 w-20 bg-ink/10"></div>
+                <p class="mt-3 font-display text-base text-ink/35 line-through">MOT? ask later</p>
+              </div>
+              <div class="sheet absolute right-3 top-2 w-40 rotate-[4deg] rounded-sm bg-white p-3">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-steel">Whiteboard</p>
+                <p class="mt-2 text-sm leading-snug text-ink/70">C3 — Golf??<br>Summer set — ask in the bay</p>
+              </div>
+              <div class="sheet absolute bottom-3 left-8 w-52 -rotate-1 rounded-sm bg-card p-3">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-steel">Cloud login</p>
+                <p class="mt-1 text-sm font-bold text-signal">£40 due again</p>
+                <p class="text-xs text-steel">Records unavailable. No connection.</p>
+              </div>
+            </div>
+            <ul class="mt-6 space-y-3 text-[15px] leading-snug">
+              <li class="flex gap-3"><span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded bg-ink/10 text-signal"><svg class="h-3.5 w-3.5"><use href="#i-x"/></svg></span>Ring binders, half-written job cards, and regs in someone’s notebook</li>
+              <li class="flex gap-3"><span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded bg-ink/10 text-signal"><svg class="h-3.5 w-3.5"><use href="#i-x"/></svg></span>Tyre locations that vanish when the whiteboard is cleaned</li>
+              <li class="flex gap-3"><span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded bg-ink/10 text-signal"><svg class="h-3.5 w-3.5"><use href="#i-x"/></svg></span>Another subscription quietly leaving the account</li>
+              <li class="flex gap-3"><span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded bg-ink/10 text-signal"><svg class="h-3.5 w-3.5"><use href="#i-x"/></svg></span>The front desk stuck the moment the line drops</li>
+            </ul>
+          </article>
+
+          <article class="reveal rounded-xl bg-ink p-6 text-white md:p-8" style="transition-delay: 120ms">
+            <div class="flex items-start justify-between gap-4">
+              <h3 class="font-display text-2xl font-bold">With Fonrek Studio</h3>
+              <span class="mt-1 inline-block border-2 border-white/80 px-2 py-1 text-[11px] font-extrabold uppercase tracking-[0.16em]">On your PC</span>
+            </div>
+            <p class="mt-4 text-white/70">One screen for the ramp, the tyre cage, and the invoice. The database is a file on the workshop computer. You own it.</p>
+            <ul class="mt-6 space-y-3 text-[15px] leading-snug">
+              <li class="flex gap-3"><span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded bg-signal text-white"><svg class="h-3.5 w-3.5"><use href="#i-check"/></svg></span>Registration, MOT date, mileage, and notes kept with the vehicle</li>
+              <li class="flex gap-3"><span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded bg-signal text-white"><svg class="h-3.5 w-3.5"><use href="#i-check"/></svg></span>Every stored set logged to a rack, a season, and a number plate</li>
+              <li class="flex gap-3"><span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded bg-signal text-white"><svg class="h-3.5 w-3.5"><use href="#i-check"/></svg></span>A PDF invoice or workshop protocol before the customer reaches the counter</li>
+              <li class="flex gap-3"><span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded bg-signal text-white"><svg class="h-3.5 w-3.5"><use href="#i-check"/></svg></span>A single lifetime licence. The monthly bill stops</li>
+              <li class="flex gap-3"><span class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded bg-signal text-white"><svg class="h-3.5 w-3.5"><use href="#i-check"/></svg></span>Day-to-day work runs with no internet connection</li>
+            </ul>
+            <a href="#features" class="mt-8 inline-flex font-bold text-white underline decoration-signal decoration-2 underline-offset-4 hover:text-white/80">Look through the tools</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="border-t border-line bg-[#F7F4EE] py-20 md:py-28">
+      <div class="mx-auto max-w-[1120px] px-5">
+        <div class="reveal max-w-2xl">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-signal">The suite</p>
+          <h2 class="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-5xl">Built for the ramp, the tyre bay, and the front desk.</h2>
+          <p class="mt-4 text-lg leading-relaxed text-steel">Four jobs the garage does every day, plus a licence that stays on the machine you paid for. No modules to switch on later.</p>
+        </div>
+
+        <div class="mt-12 grid grid-cols-1 gap-4 lg:grid-cols-12">
+          <article class="feature-card reveal col-span-1 flex flex-col rounded-xl border border-line bg-card p-6 lg:col-span-7 md:p-7" style="transition-delay: 0ms">
+            <div class="ico grid h-12 w-12 place-items-center rounded-lg bg-[#F6E4E1] text-ink">
+              <svg class="h-6 w-6"><use href="#i-car"/></svg>
+            </div>
+            <h3 class="mt-5 font-display text-2xl font-bold">Customers and vehicles</h3>
+            <p class="mt-2 max-w-prose text-[15px] leading-relaxed text-steel">The registration, make, MOT due date, mileage, and the note from under the bonnet — kept with the car. History stays in the garage, not in a spreadsheet nobody can find.</p>
+            <div class="mt-6 overflow-hidden rounded-lg border border-line bg-paper" aria-hidden="true">
+              <div class="grid grid-cols-[1fr_auto] gap-2 border-b border-line px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-steel"><span>Vehicle</span><span>MOT</span></div>
+              <div class="grid grid-cols-[1fr_auto] items-center gap-2 border-b border-line bg-white px-3 py-2.5 text-sm"><span><strong>YE64 NRX</strong> · BMW 1 Series</span><span class="rounded bg-signal px-2 py-0.5 text-[11px] font-bold text-white">Tomorrow</span></div>
+              <div class="grid grid-cols-[1fr_auto] items-center gap-2 border-b border-line px-3 py-2.5 text-sm"><span><strong>BN19 SPE</strong> · Corsa · 41,006 mi</span><span class="font-semibold">4 Nov</span></div>
+              <div class="grid grid-cols-[1fr_auto] items-center gap-2 px-3 py-2.5 text-sm"><span><strong>FG68 KPL</strong> · Focus · 62,480 mi</span><span class="font-semibold">18 Nov</span></div>
+            </div>
+          </article>
+
+          <article class="feature-card reveal col-span-1 flex flex-col rounded-xl border border-line bg-card p-6 lg:col-span-5 md:p-7" style="transition-delay: 80ms">
+            <div class="ico grid h-12 w-12 place-items-center rounded-lg bg-[#F6E4E1] text-ink">
+              <svg class="h-6 w-6"><use href="#i-tyre"/></svg>
+            </div>
+            <h3 class="mt-5 font-display text-2xl font-bold">Tyre storage log</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-steel">Winter and summer sets, logged to a rack, a size, and a registration. Find the right tyres before the customer is at the counter.</p>
+            <ul class="mt-6 space-y-2 text-sm" aria-hidden="true">
+              <li class="flex items-center justify-between gap-2 rounded-lg bg-ink px-3 py-2.5 text-white">
+                <span class="font-bold">C3</span>
+                <span class="text-white/80">195/55 R16 · Winter</span>
+                <span class="font-semibold">BN19 SPE</span>
+              </li>
+              <li class="flex items-center justify-between gap-2 rounded-lg border border-line bg-white px-3 py-2.5">
+                <span class="font-bold">C4</span>
+                <span class="text-steel">225/45 R17 · Summer</span>
+                <span class="font-semibold">LK21 HWD</span>
+              </li>
+              <li class="flex items-center justify-between gap-2 rounded-lg border border-line bg-white px-3 py-2.5">
+                <span class="font-bold">D1</span>
+                <span class="text-steel">205/55 R16 · Winter</span>
+                <span class="font-semibold">YE64 NRX</span>
+              </li>
+            </ul>
+          </article>
+
+          <article class="feature-card reveal col-span-1 flex flex-col rounded-xl border border-line bg-card p-6 lg:col-span-5 md:p-7" style="transition-delay: 40ms">
+            <div class="ico grid h-12 w-12 place-items-center rounded-lg bg-[#F6E4E1] text-ink">
+              <svg class="h-6 w-6"><use href="#i-doc"/></svg>
+            </div>
+            <h3 class="mt-5 font-display text-2xl font-bold">Catalogue and PDF invoices</h3>
+            <p class="mt-2 text-[15px] leading-relaxed text-steel">Price the job from your own catalogue — labour, parts, and the MOT. One click writes a clean invoice or workshop protocol as a PDF.</p>
+            <div class="mt-6 rounded-lg border border-line bg-white p-4 text-sm" aria-hidden="true">
+              <div class="flex items-baseline justify-between">
+                <p class="font-bold">INV-1048</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wider text-steel">From catalogue</p>
+              </div>
+              <p class="text-xs text-steel">FG68 KPL · Ford Focus · Hughes</p>
+              <dl class="nums mt-3 space-y-1.5 text-[13px]">
+                <div class="flex justify-between gap-3"><dt>MOT test <span class="text-steel">VAT exempt</span></dt><dd>£54.85</dd></div>
+                <div class="flex justify-between gap-3"><dt>Labour, 1.5 hrs</dt><dd>£120.00</dd></div>
+                <div class="flex justify-between gap-3"><dt>Oil and filter</dt><dd>£38.40</dd></div>
+                <div class="flex justify-between gap-3 text-steel"><dt>VAT @ 20%</dt><dd>£31.68</dd></div>
+                <div class="flex justify-between gap-3 border-t border-line pt-2 font-bold"><dt>Total</dt><dd>£244.93</dd></div>
+              </dl>
+            </div>
+          </article>
+
+          <article class="feature-card reveal col-span-1 flex flex-col rounded-xl bg-ink p-6 text-white lg:col-span-7 md:p-7" style="transition-delay: 120ms">
+            <div class="ico grid h-12 w-12 place-items-center rounded-lg bg-white/10 text-white">
+              <svg class="h-6 w-6"><use href="#i-db"/></svg>
+            </div>
+            <h3 class="mt-5 font-display text-2xl font-bold">Offline-first. Your SQLite file.</h3>
+            <p class="mt-2 max-w-prose text-[15px] leading-relaxed text-white/70">The workshop lives in a database on the garage PC — in the office or on the laptop in the van. It opens when the broadband does not. Customer names, plates, and job history are not uploaded to a cloud.</p>
+            <div class="mt-6 rounded-lg border border-white/10 bg-white/5 p-4" aria-hidden="true">
+              <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-white/40">Local database</p>
+              <p class="mt-2 break-all font-mono text-sm text-white">C:\FonrekStudio\workshop.db</p>
+              <div class="mt-4 flex flex-wrap gap-2 text-[11px] font-bold uppercase tracking-wide">
+                <span class="rounded bg-emerald-400/15 px-2 py-1 text-emerald-300">On this PC</span>
+                <span class="rounded bg-white/10 px-2 py-1 text-white/70">Not synced</span>
+                <span class="rounded bg-white/10 px-2 py-1 text-white/70">No account</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="feature-card reveal col-span-1 rounded-xl border border-line bg-card p-6 lg:col-span-12 md:p-7" style="transition-delay: 80ms">
+            <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+              <div class="flex gap-4">
+                <div class="ico grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-[#F6E4E1] text-ink">
+                  <svg class="h-6 w-6"><use href="#i-key"/></svg>
+                </div>
+                <div>
+                  <h3 class="font-display text-2xl font-bold">HWID licence key</h3>
+                  <p class="mt-2 max-w-xl text-[15px] leading-relaxed text-steel">The key is checked against the computer’s hardware ID, so the copy you bought stays on the workshop machine. One PC. One licence. No shared logins floating around the yard.</p>
+                </div>
+              </div>
+              <div class="shrink-0 rounded-lg border border-dashed border-ink/20 bg-paper px-4 py-3" aria-hidden="true">
+                <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-steel">Sample key</p>
+                <p class="mt-1 font-mono text-sm font-semibold tracking-wide">FRK-UK-DEMO-0000</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" class="bg-ink py-20 text-white md:py-28">
+      <div class="mx-auto grid max-w-[1120px] items-start gap-12 px-5 lg:grid-cols-2">
+        <div class="reveal">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-signal">Pricing</p>
+          <h2 class="mt-3 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-5xl">Own it outright.</h2>
+          <p class="mt-4 max-w-md text-lg leading-relaxed text-white/70">A lifetime licence for one workshop PC. Pay once, then get on with the work. The customer list stays in the garage.</p>
+
+          <div class="mt-8 flex items-end gap-8 border-y border-white/10 py-6">
+            <div>
+              <p class="font-display text-6xl font-extrabold leading-none tracking-tight nums">£0</p>
+              <p class="mt-2 text-sm font-semibold uppercase tracking-[0.14em] text-white/50">per month</p>
+            </div>
+            <div class="pb-1">
+              <p class="font-display text-4xl font-bold leading-none nums">£349</p>
+              <p class="mt-2 text-sm text-white/60">ex VAT · £418.80 inc VAT</p>
+              <p class="text-sm text-white/60">paid once</p>
+            </div>
+          </div>
+
+          <div class="mt-6 space-y-3" aria-label="Three-year cost illustration">
+            <div>
+              <div class="mb-1.5 flex justify-between text-sm"><span class="text-white/70">Illustrative cloud plan, 3 years</span><span class="nums font-semibold">£1,440</span></div>
+              <div class="h-2.5 overflow-hidden rounded-sm bg-white/10"><div class="bar-fill h-full bg-white/35" style="--w: 100%"></div></div>
+            </div>
+            <div>
+              <div class="mb-1.5 flex justify-between text-sm"><span>Fonrek Studio, same 3 years</span><span class="nums font-semibold">£349</span></div>
+              <div class="h-2.5 overflow-hidden rounded-sm bg-white/10"><div class="bar-fill h-full bg-signal" style="--w: 24%"></div></div>
+            </div>
+            <p class="text-xs leading-relaxed text-white/45">Illustration only, at £40 a month. Real cloud workshop prices vary. After three years that example has cost £1,440, and the records are still not on your PC.</p>
+          </div>
+
+          <ul class="mt-8 space-y-2.5 text-[15px] text-white/85">
+            <li class="flex gap-2.5"><svg class="mt-1 h-4 w-4 shrink-0 text-signal"><use href="#i-check"/></svg>Unlimited customers, vehicles, and stored tyre sets</li>
+            <li class="flex gap-2.5"><svg class="mt-1 h-4 w-4 shrink-0 text-signal"><use href="#i-check"/></svg>Service catalogue, PDF invoices, and workshop protocols</li>
+            <li class="flex gap-2.5"><svg class="mt-1 h-4 w-4 shrink-0 text-signal"><use href="#i-check"/></svg>Offline SQLite database on your computer</li>
+            <li class="flex gap-2.5"><svg class="mt-1 h-4 w-4 shrink-0 text-signal"><use href="#i-check"/></svg>HWID licence locked to one workshop PC</li>
+            <li class="flex gap-2.5"><svg class="mt-1 h-4 w-4 shrink-0 text-signal"><use href="#i-check"/></svg>No subscription, ever</li>
+          </ul>
+        </div>
+
+        <form id="buy" class="reveal rounded-xl bg-paper p-6 text-ink shadow-mock md:p-8" style="transition-delay: 100ms" action="mailto:hello@fonrekstudio.co.uk" method="post" enctype="text/plain">
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-signal">Buy now</p>
+          <h3 class="mt-2 font-display text-3xl font-bold tracking-tight">Get the lifetime licence</h3>
+          <p class="mt-2 text-sm leading-relaxed text-steel">Tell us the garage and where to send the installer. We reply with the desktop app and a licence key for that PC.</p>
+
+          <div class="mt-6 space-y-4">
+            <div>
+              <label for="garage" class="mb-1.5 block text-sm font-semibold">Garage name</label>
+              <input id="garage" name="garage" type="text" required autocomplete="organization" maxlength="120" class="w-full rounded-md border border-line bg-white px-3.5 py-3 text-ink outline-none ring-signal/30 placeholder:text-steel/50 focus:border-signal focus:ring-2" placeholder="e.g. Hartley Road Garage">
+            </div>
+            <div>
+              <label for="town" class="mb-1.5 block text-sm font-semibold">Town</label>
+              <input id="town" name="town" type="text" required autocomplete="address-level2" maxlength="80" class="w-full rounded-md border border-line bg-white px-3.5 py-3 text-ink outline-none focus:border-signal focus:ring-2" placeholder="e.g. Sheffield">
+            </div>
+            <div>
+              <label for="email" class="mb-1.5 block text-sm font-semibold">Email</label>
+              <input id="email" name="email" type="email" required autocomplete="email" maxlength="120" class="w-full rounded-md border border-line bg-white px-3.5 py-3 text-ink outline-none focus:border-signal focus:ring-2" placeholder="you@garage.co.uk">
+            </div>
+          </div>
+
+          <button type="submit" class="mt-6 inline-flex w-full items-center justify-center rounded-md bg-signal px-5 py-3.5 text-base font-bold text-white hover:bg-signaldark">Email to buy — £349 ex VAT</button>
+          <p class="mt-3 text-xs leading-relaxed text-steel">This opens an email to <a class="font-semibold text-ink underline decoration-signal underline-offset-2" href="mailto:hello@fonrekstudio.co.uk">hello@fonrekstudio.co.uk</a>. A second PC for the ramp? Mention it in the message and we will sort a key.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/10 bg-deep py-10 text-white/70">
+    <div class="mx-auto flex max-w-[1120px] flex-col gap-6 px-5 sm:flex-row sm:items-end sm:justify-between">
+      <div>
+        <p class="font-display text-lg font-bold text-white">Fonrek Studio</p>
+        <p class="mt-1 max-w-sm text-sm leading-relaxed">Desktop workshop software for UK garages. MOT dates, tyre storage, invoices, and customer records — on your PC.</p>
+      </div>
+      <div class="text-sm">
+        <p><a class="font-semibold text-white underline decoration-white/30 underline-offset-4 hover:decoration-signal" href="mailto:hello@fonrekstudio.co.uk">hello@fonrekstudio.co.uk</a></p>
+        <p class="mt-1">United Kingdom</p>
+        <p class="mt-3 text-white/45">© <span id="year">2026</span> Fonrek Studio</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var toggle = document.getElementById("nav-toggle");
+      var panel = document.getElementById("nav-panel");
+      var burger = document.getElementById("burger");
+      var year = document.getElementById("year");
+      if (year) year.textContent = String(new Date().getFullYear());
+
+      function setOpen(open) {
+        panel.classList.toggle("max-lg:hidden", !open);
+        panel.classList.toggle("is-open", open);
+        burger.classList.toggle("is-open", open);
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      }
+
+      toggle.addEventListener("click", function () {
+        setOpen(toggle.getAttribute("aria-expanded") !== "true");
+      });
+
+      panel.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () { setOpen(false); });
+      });
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") setOpen(false);
+      });
+
+      var form = document.getElementById("buy");
+      form.addEventListener("submit", function (event) {
+        if (!form.checkValidity()) return;
+        event.preventDefault();
+        var data = new FormData(form);
+        var subject = encodeURIComponent("Fonrek Studio lifetime licence");
+        var body = encodeURIComponent(
+          "Garage: " + data.get("garage") + "\n" +
+          "Town: " + data.get("town") + "\n" +
+          "Email: " + data.get("email") + "\n\n" +
+          "Please send the installer and a licence key for our workshop PC."
+        );
+        window.location.href = "mailto:hello@fonrekstudio.co.uk?subject=" + subject + "&body=" + body;
+      });
+
+      var nodes = document.querySelectorAll(".reveal");
+      if (!("IntersectionObserver" in window)) {
+        nodes.forEach(function (node) { node.classList.add("is-in"); });
+        return;
+      }
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-in");
+          observer.unobserve(entry.target);
+        });
+      }, { threshold: 0.16, rootMargin: "0px 0px -8% 0px" });
+      nodes.forEach(function (node) { observer.observe(node); });
+    })();
+  </script>
+</body>
+</html>
